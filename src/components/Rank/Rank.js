@@ -1,8 +1,8 @@
 import React from 'react';
-import './Rank.css'
+
 const Rank = () => {
     return (
-        <div className='center'>
+        <div>
             <div className='white f3'>
                 {'Lali, your current rank is...'}
             </div>
