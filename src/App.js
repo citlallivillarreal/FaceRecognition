@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import Navigation from './components/Navigation/Navigation';
+import Signin from './components/Signin/Signin';
+import Register from './components/Register/Register';
 import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
@@ -13,7 +15,9 @@ class App extends Component {
     this.state = {
       input: '',
       imageUrl: '', 
-      box: {}
+      box: {},
+      route: 'signin',
+      isSignedIn: false
     }
   }
 
@@ -23,7 +27,6 @@ class App extends Component {
     const width = Number(image.width);
     const height = Number(image.height);
     const boundingBox = regions.region_info.bounding_box;
-    console.log(width, height);
     return {
       leftCol: boundingBox.left_col.toFixed(3) * width,
       topRow: boundingBox.top_row.toFixed(3) * height, 
@@ -33,7 +36,6 @@ class App extends Component {
   }
 
   displayFaceBox = (box) => {
-    console.log(box);
     this.setState({box: box});
   }
   onInputChange = (event) => {
@@ -97,18 +99,17 @@ class App extends Component {
             
             regions.forEach(region => {
                 // Accessing and rounding the bounding box values
-                const boundingBox = region.region_info.bounding_box;
-                const topRow = boundingBox.top_row.toFixed(3);
-                const leftCol = boundingBox.left_col.toFixed(3);
-                const bottomRow = boundingBox.bottom_row.toFixed(3);
-                const rightCol = boundingBox.right_col.toFixed(3);
+                // const boundingBox = region.region_info.bounding_box;
+                // const topRow = boundingBox.top_row.toFixed(3);
+                // const leftCol = boundingBox.left_col.toFixed(3);
+                // const bottomRow = boundingBox.bottom_row.toFixed(3);
+                // const rightCol = boundingBox.right_col.toFixed(3);
 
                 region.data.concepts.forEach(concept => {
                     // Accessing and rounding the concept value
-                    const name = concept.name;
-                    const value = concept.value.toFixed(4);
+                    // const name = concept.name;
+                    // const value = concept.value.toFixed(4);
 
-                    console.log(`${name}: ${value} BBox: ${topRow}, ${leftCol}, ${bottomRow}, ${rightCol}`);
                     
                 });
             });
@@ -118,18 +119,39 @@ class App extends Component {
 
   }
 
+  onRouteChange = (route) => {
+    if (route === 'signout') {
+      this.setState({isSignedIn: false})
+    } else if (route === 'home') {
+      this.setState({isSignedIn: true})
+    }
+    this.setState({route: route })
+  }
+
   render() {
+    const { isSignedIn, imageUrl, route, box } = this.state; 
     return (
       <div className="App">
         <ParticlesBg className='particles' type="cobweb" bg={true} num={350} color="#ffffff"/>
-        <Navigation />
-        <Logo />
-        <Rank />
-        <ImageLinkForm 
-          onInputChange={this.onInputChange} 
-          onButtonSubmit={this.onButtonSubmit}
-        />    
-        <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl}/>
+        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange}/>
+        { route === 'home'
+          ? <div> 
+              <Logo />
+              <Rank />
+              <ImageLinkForm 
+                onInputChange={this.onInputChange} 
+                onButtonSubmit={this.onButtonSubmit}
+              />    
+              <FaceRecognition box={box} imageUrl={imageUrl}/>
+          </div>
+          : (     
+            route === 'signin'     
+            ? <Signin onRouteChange={this.onRouteChange}/>
+            : <Register onRouteChange={this.onRouteChange} />
+
+
+          )
+      }
       </div>
     );
   }
