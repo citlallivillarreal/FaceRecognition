@@ -9,7 +9,20 @@ import ParticlesBg from 'particles-bg';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import './App.css';
 
-
+const initialState = {
+  input: '',
+  imageUrl: '', 
+  box: {},
+  route: 'signin',
+  isSignedIn: false,
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    enteries: 0,
+    joined: ''
+  }
+}
 class App extends Component {
   constructor() {
     super();
@@ -151,7 +164,7 @@ class App extends Component {
 
   onRouteChange = (route) => {
     if (route === 'signout') {
-      this.setState({isSignedIn: false})
+      this.setState(initialState)
     } else if (route === 'home') {
       this.setState({isSignedIn: true})
     }
