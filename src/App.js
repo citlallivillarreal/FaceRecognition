@@ -136,6 +136,7 @@ class App extends Component {
                 .then(count => {
                   this.setState(Object.assign(this.state.user, {enteries:count}))
                 })
+                .catch(console.log)
             }
             // this.displayFaceBox(this.calculateFaceLocation(result));
             const regions = result.outputs[0].data.regions;
